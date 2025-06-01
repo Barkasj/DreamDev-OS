@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamDev OS - AI Orchestration System</title>
+    <meta name="description" content="AI orchestration system that generates comprehensive step-by-step prompts using four thinking modules">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DreamDev OS - AI Orchestration System">
+    <meta property="og:description" content="AI orchestration system that generates comprehensive step-by-step prompts using four thinking modules">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="DreamDev OS - AI Orchestration System">
+    <meta property="twitter:description" content="AI orchestration system that generates comprehensive step-by-step prompts using four thinking modules">
+</head>
+<body>
+    <div id="__next">
+        <!-- Next.js will render the app here -->
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif;">
+            <div style="text-align: center;">
+                <h1>Loading DreamDev OS...</h1>
+                <p>AI Orchestration System</p>
+                <div style="margin-top: 20px;">
+                    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+    
+    <script>
+        // Fallback jika Next.js tidak load
+        setTimeout(function() {
+            if (!window.next) {
+                document.getElementById('__next').innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <h1>DreamDev OS</h1>
+                        <p>Please enable JavaScript to run this application.</p>
+                        <p>If you continue to see this message, please contact support.</p>
+                    </div>
+                `;
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
