@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 import { DreamDevApiService, ApiError, handleApiError } from '../api';
-import { ProjectDocument, PromptCompositionResult } from '@/types';
+import { PromptCompositionResult } from '@/types';
 
 // Mock axios
 jest.mock('axios');
@@ -47,7 +47,7 @@ describe('DreamDevApiService', () => {
 
       try {
         await apiService.healthCheck();
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 

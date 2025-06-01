@@ -9,25 +9,6 @@ import { ProjectDocument, TaskNode, GlobalContext, ModuleContext } from '../type
 
 export class ProjectService {
   /**
-   * Save new project to database (legacy method)
-   */
-  async createProject(
-    originalPrdText: string,
-    taskTree: TaskNode[],
-    globalContext: string,
-    metadata?: ProjectDocument['metadata']
-  ): Promise<string> {
-    return this.createProjectWithContext(
-      originalPrdText,
-      taskTree,
-      globalContext,
-      metadata,
-      null,
-      []
-    );
-  }
-
-  /**
    * Save new project to database with enhanced context
    */
   async createProjectWithContext(
@@ -39,14 +20,16 @@ export class ProjectService {
     moduleContexts?: ModuleContext[]
   ): Promise<string> {
     try {
-      console.log('🚀 Creating new project with enhanced context...');
-      console.log('📝 PRD Text length:', originalPrdText.length);
-      console.log('🌳 Task tree nodes:', taskTree.length);
-      console.log('🌍 Global context:', globalContext.substring(0, 100) + '...');
-      console.log('🧠 Enhanced context data:', {
-        hasGlobalContextData: !!globalContextData,
-        moduleContextsCount: moduleContexts?.length || 0
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🚀 Creating new project with enhanced context...');
+        console.log('📝 PRD Text length:', originalPrdText.length);
+        console.log('🌳 Task tree nodes:', taskTree.length);
+        console.log('🌍 Global context:', globalContext.substring(0, 100) + '...');
+        console.log('🧠 Enhanced context data:', {
+          hasGlobalContextData: !!globalContextData,
+          moduleContextsCount: moduleContexts?.length || 0
+        });
+      }
 
       const db = await getDatabase();
       const projectId = uuidv4();
@@ -63,20 +46,26 @@ export class ProjectService {
         metadata,
       };
 
-      console.log('📄 Project document structure:');
-      console.log('- Project ID:', projectId);
-      console.log('- Task tree structure:', JSON.stringify(taskTree.map(t => ({ id: t.id, name: t.taskName, level: t.level })), null, 2));
-      console.log('💾 Attempting to insert into collection:', COLLECTIONS.PROJECTS);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📄 Project document structure:');
+        console.log('- Project ID:', projectId);
+        console.log('- Task tree structure:', JSON.stringify(taskTree.map(t => ({ id: t.id, name: t.taskName, level: t.level })), null, 2));
+        console.log('💾 Attempting to insert into collection:', COLLECTIONS.PROJECTS);
+      }
 
       const result = await db.collection<ProjectDocument>(COLLECTIONS.PROJECTS).insertOne(projectDocument);
 
-      console.log('📊 Insert result:', {
-        acknowledged: result.acknowledged,
-        insertedId: result.insertedId
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📊 Insert result:', {
+          acknowledged: result.acknowledged,
+          insertedId: result.insertedId
+        });
+      }
 
       if (result.acknowledged) {
-        console.log('✅ Project created successfully:', projectId);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Project created successfully:', projectId);
+        }
         return projectId;
       }
 
@@ -103,10 +92,12 @@ export class ProjectService {
       const db = await getDatabase();
       const project = await db.collection<ProjectDocument>(COLLECTIONS.PROJECTS).findOne({ _id: projectId });
       
-      if (project) {
-        console.log('✅ Project found:', projectId);
-      } else {
-        console.log('⚠️ Project not found:', projectId);
+      if (process.env.NODE_ENV === 'development') {
+        if (project) {
+          console.log('✅ Project found:', projectId);
+        } else {
+          console.log('⚠️ Project not found:', projectId);
+        }
       }
       
       return project;
@@ -138,10 +129,12 @@ export class ProjectService {
 
       const success = result.modifiedCount > 0;
       
-      if (success) {
-        console.log('✅ Project updated successfully:', projectId);
-      } else {
-        console.log('⚠️ No project updated (may not exist):', projectId);
+      if (process.env.NODE_ENV === 'development') {
+        if (success) {
+          console.log('✅ Project updated successfully:', projectId);
+        } else {
+          console.log('⚠️ No project updated (may not exist):', projectId);
+        }
       }
       
       return success;
@@ -161,10 +154,12 @@ export class ProjectService {
       
       const success = result.deletedCount > 0;
       
-      if (success) {
-        console.log('✅ Project deleted successfully:', projectId);
-      } else {
-        console.log('⚠️ No project deleted (may not exist):', projectId);
+      if (process.env.NODE_ENV === 'development') {
+        if (success) {
+          console.log('✅ Project deleted successfully:', projectId);
+        } else {
+          console.log('⚠️ No project deleted (may not exist):', projectId);
+        }
       }
       
       return success;
