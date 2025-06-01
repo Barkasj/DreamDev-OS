@@ -1,0 +1,129 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for DreamDev-OS
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! ✨
+        
+        Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 📝 Feature Summary
+      description: A clear and concise description of the feature you'd like to see.
+      placeholder: Briefly describe the feature...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🎯 Problem Statement
+      description: What problem does this feature solve? What use case does it address?
+      placeholder: |
+        Is your feature request related to a problem? Please describe.
+        A clear and concise description of what the problem is.
+        Ex. I'm always frustrated when [...]
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 Proposed Solution
+      description: Describe the solution you'd like to see implemented.
+      placeholder: |
+        A clear and concise description of what you want to happen.
+        How should this feature work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives Considered
+      description: Describe any alternative solutions or features you've considered.
+      placeholder: |
+        A clear and concise description of any alternative solutions or features you've considered.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 📊 Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would be helpful
+        - High - Important for my workflow
+        - Critical - Blocking my usage
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: 🔧 Estimated Complexity
+      description: How complex do you think this feature would be to implement?
+      options:
+        - Simple - Small change or addition
+        - Medium - Moderate development effort
+        - Complex - Significant development effort
+        - Unknown - Not sure about complexity
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: 🎨 Mockups/Examples
+      description: If applicable, add mockups, wireframes, or examples to help explain your feature.
+      placeholder: Drag and drop images or provide links to examples...
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: ✅ Acceptance Criteria
+      description: What would need to be true for this feature to be considered complete?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 🏗️ Component Area
+      description: Which part of the application would this feature affect?
+      options:
+        - Frontend UI/UX
+        - Backend API
+        - Database
+        - Testing
+        - Documentation
+        - DevOps/Infrastructure
+        - Multiple areas
+        - Not sure
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📋 Additional Context
+      description: Add any other context, links, or information about the feature request here.
+      placeholder: Any additional information that might be helpful...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for existing feature requests before creating this one
+          required: true
+        - label: This feature aligns with the project's goals and scope
+          required: true
+        - label: I would be willing to help implement this feature (if possible)
+          required: false
