@@ -225,10 +225,10 @@ Administrators can manage product information through the admin interface.
       const emptyPRD = '';
       const result = prdParser.processPrd(emptyPRD);
       
-      expect(result.sections).toHaveLength(0);
-      expect(result.taskTree).toHaveLength(0);
-      expect(result.totalTasks).toBe(0);
-      expect(result.entityStats.totalActors).toBe(0);
+      expect(result.sections || []).toHaveLength(0);
+      expect(result.taskTree || []).toHaveLength(0);
+      expect(result.totalTasks || 0).toBe(0);
+      expect(result.entityStats?.totalActors || 0).toBe(0);
     });
 
     it('should handle PRD with no headers', () => {

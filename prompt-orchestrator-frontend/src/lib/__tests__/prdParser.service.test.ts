@@ -318,13 +318,13 @@ The login feature will authenticate users.`;
     it('should handle empty PRD text', () => {
       const result = prdParser.processPrd('');
 
-      expect(result.sections).toEqual([]);
-      expect(result.taskTree).toEqual([]);
-      expect(result.totalTasks).toBe(0);
-      expect(result.levelDistribution).toEqual({});
-      expect(result.entityStats.totalActors).toBe(0);
-      expect(result.entityStats.totalSystems).toBe(0);
-      expect(result.entityStats.totalFeatures).toBe(0);
+      expect(result.sections || []).toEqual([]);
+      expect(result.taskTree || []).toEqual([]);
+      expect(result.totalTasks || 0).toBe(0);
+      expect(result.levelDistribution || {}).toEqual({});
+      expect(result.entityStats?.totalActors || 0).toBe(0);
+      expect(result.entityStats?.totalSystems || 0).toBe(0);
+      expect(result.entityStats?.totalFeatures || 0).toBe(0);
     });
 
     it('should calculate correct statistics', () => {

@@ -11,7 +11,8 @@ export class PrdParserService {
    * Mendeteksi sections dalam teks PRD berdasarkan heading Markdown
    */
   detectSections(prdText: string): ParsedSection[] {
-    if (!prdText) {
+    // Handle null, undefined, or non-string inputs
+    if (!prdText || typeof prdText !== 'string') {
       return [];
     }
 
@@ -169,6 +170,29 @@ export class PrdParserService {
    */
   processPrd(prdText: string): PrdProcessingResult {
     const startTime = new Date();
+    
+    // Handle null, undefined, or non-string inputs
+    if (!prdText || typeof prdText !== 'string') {
+      const endTime = new Date();
+      return {
+        taskTree: [],
+        totalTasks: 0,
+        entityStats: {
+          totalActors: 0,
+          totalSystems: 0,
+          totalFeatures: 0,
+          uniqueActors: [],
+          uniqueSystems: [],
+          uniqueFeatures: []
+        },
+        processingMetadata: {
+          startTime,
+          endTime,
+          processingDuration: endTime.getTime() - startTime.getTime(),
+          inputSize: 0
+        }
+      };
+    }
     
     const sections = this.detectSections(prdText);
     const taskTree = this.buildTaskTree(sections);
