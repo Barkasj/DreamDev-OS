@@ -3,7 +3,8 @@
  * Generates various types of reports from ProjectDocument data
  */
 
-import { ProjectDocument, TaskNode, ModuleContext, ExtractedEntities } from '../types';
+import { ProjectDocument, TaskNode } from '../types';
+// Remove unused imports: ModuleContext, ExtractedEntities
 
 export class ReportGeneratorService {
   /**

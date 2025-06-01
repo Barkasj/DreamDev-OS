@@ -66,13 +66,15 @@ export async function GET(
       }
     });
 
-  } catch (error: any) {
-    console.error(`Error generating report (${params.reportType}) for project ${params.projectId}:`, error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan internal saat membuat laporan.";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error(`Error generating report (${(await params).reportType}) for project ${(await params).projectId}:`, error);
     
     return NextResponse.json(
       { 
-        message: error.message || "Terjadi kesalahan internal saat membuat laporan.",
-        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        message: errorMessage,
+        error: process.env.NODE_ENV === 'development' ? errorStack : undefined
       },
       { status: 500 }
     );

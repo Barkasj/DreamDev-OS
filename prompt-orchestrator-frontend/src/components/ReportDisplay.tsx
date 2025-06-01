@@ -67,11 +67,12 @@ export default function ReportDisplay({ projectId, isLoading = false }: ReportDi
         isLoadingReport: false
       }));
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan saat membuat laporan";
       console.error(`Error generating report ${reportType}:`, error);
       setReportState(prev => ({
         ...prev,
-        error: `Error membuat laporan: ${error.message}`,
+        error: `Error membuat laporan: ${errorMessage}`,
         currentReportType: null,
         isLoadingReport: false
       }));
@@ -81,7 +82,8 @@ export default function ReportDisplay({ projectId, isLoading = false }: ReportDi
   const handleDownloadReport = () => {
     if (!reportState.reportContent || !reportState.currentReportType) return;
 
-    const reportType = REPORT_TYPES.find(type => type.id === reportState.currentReportType);
+    // Remove unused variable
+    // const reportType = REPORT_TYPES.find(type => type.id === reportState.currentReportType);
     const filename = `${projectId}-${reportState.currentReportType}.md`;
     
     const blob = new Blob([reportState.reportContent], { type: 'text/markdown' });
