@@ -39,8 +39,8 @@ DreamDev OS/
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/dreamdev/dreamdev-os.git
-   cd dreamdev-os
+   git clone https://github.com/Barkasj/DreamDev-OS.git
+   cd DreamDev-OS
    ```
 
 2. **Install Dependencies**
