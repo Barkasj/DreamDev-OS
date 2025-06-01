@@ -146,6 +146,44 @@ describe('textUtils', () => {
       expect(compressed[1].content).toBe('Chunk 3'); // Should skip some chunks
     });
 
+    it('should select chunks with "keyword-based" strategy', () => {
+      const keywordChunks: TextChunk[] = [
+        {
+          content: 'This chunk contains important system architecture details',
+          metadata: { index: 0, startPosition: 0, endPosition: 50, size: 50, hasOverlap: false }
+        },
+        {
+          content: 'Random content without relevant terms',
+          metadata: { index: 1, startPosition: 50, endPosition: 85, size: 35, hasOverlap: false }
+        },
+        {
+          content: 'Implementation details for the authentication module',
+          metadata: { index: 2, startPosition: 85, endPosition: 135, size: 50, hasOverlap: false }
+        },
+        {
+          content: 'More random text here',
+          metadata: { index: 3, startPosition: 135, endPosition: 155, size: 20, hasOverlap: false }
+        }
+      ];
+
+      const keywords = ['system', 'implementation', 'authentication'];
+      const compressed = compressChunks(keywordChunks, 2, 'keyword-based', keywords);
+      
+      expect(compressed).toHaveLength(2);
+      // Should select chunks with highest keyword relevance (not necessarily in order)
+      const selectedContents = compressed.map(chunk => chunk.content);
+      expect(selectedContents.some(content => content.includes('system') || content.includes('implementation') || content.includes('authentication'))).toBe(true);
+      // Should not include the random content chunk
+      expect(selectedContents.some(content => content.includes('Random content without relevant terms'))).toBe(false);
+    });
+
+    it('should fallback to "first" strategy when no keywords provided for keyword-based', () => {
+      const compressed = compressChunks(sampleChunks, 2, 'keyword-based');
+      expect(compressed).toHaveLength(2);
+      expect(compressed[0].content).toBe('Chunk 1');
+      expect(compressed[1].content).toBe('Chunk 2');
+    });
+
     it('should handle edge cases', () => {
       expect(compressChunks([], 2, 'first')).toHaveLength(0);
       expect(compressChunks(sampleChunks, 0, 'first')).toHaveLength(0);

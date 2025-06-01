@@ -265,7 +265,8 @@ function getOverlapText(text: string, overlapSize: number): string {
 export function compressChunks(
   chunks: TextChunk[],
   maxChunks: number,
-  strategy: 'first' | 'distributed' | 'keyword-based' = 'first'
+  strategy: 'first' | 'distributed' | 'keyword-based' = 'first',
+  keywords?: string[]
 ): TextChunk[] {
   if (chunks.length <= maxChunks) {
     return chunks;
@@ -279,8 +280,7 @@ export function compressChunks(
       return distributeChunks(chunks, maxChunks);
     
     case 'keyword-based':
-      // TODO: Implement keyword-based selection
-      return chunks.slice(0, maxChunks);
+      return selectChunksByKeywords(chunks, maxChunks, keywords);
     
     default:
       return chunks.slice(0, maxChunks);
@@ -306,6 +306,69 @@ function distributeChunks(chunks: TextChunk[], maxChunks: number): TextChunk[] {
   }
 
   return selected;
+}
+
+/**
+ * Select chunks based on keyword relevance scoring
+ */
+function selectChunksByKeywords(
+  chunks: TextChunk[], 
+  maxChunks: number, 
+  keywords?: string[]
+): TextChunk[] {
+  if (!keywords || keywords.length === 0) {
+    // Fallback to first strategy if no keywords provided
+    return chunks.slice(0, maxChunks);
+  }
+
+  // Calculate relevance score for each chunk
+  const scoredChunks = chunks.map(chunk => {
+    const score = calculateKeywordScore(chunk.content, keywords);
+    return { chunk, score };
+  });
+
+  // Sort by score (descending) and take top chunks
+  scoredChunks.sort((a, b) => b.score - a.score);
+  
+  return scoredChunks
+    .slice(0, maxChunks)
+    .map(item => item.chunk);
+}
+
+/**
+ * Calculate keyword relevance score for a text chunk
+ */
+function calculateKeywordScore(text: string, keywords: string[]): number {
+  const lowerText = text.toLowerCase();
+  let score = 0;
+  
+  for (const keyword of keywords) {
+    const lowerKeyword = keyword.toLowerCase();
+    
+    // Count exact matches (higher weight)
+    const exactMatches = (lowerText.match(new RegExp(`\\b${escapeRegExp(lowerKeyword)}\\b`, 'g')) || []).length;
+    score += exactMatches * 3;
+    
+    // Count partial matches (lower weight)
+    const partialMatches = (lowerText.match(new RegExp(escapeRegExp(lowerKeyword), 'g')) || []).length;
+    score += partialMatches * 1;
+    
+    // Bonus for keyword appearing near the beginning of chunk
+    const earlyPosition = lowerText.indexOf(lowerKeyword);
+    if (earlyPosition !== -1 && earlyPosition < text.length * 0.3) {
+      score += 2;
+    }
+  }
+  
+  // Normalize score by chunk length to avoid bias toward longer chunks
+  return score / Math.sqrt(text.length);
+}
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**

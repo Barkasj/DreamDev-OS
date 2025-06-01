@@ -381,7 +381,8 @@ export class ContextStackManagerService {
 
     // Apply compression strategy
     const compressionStrategy = this.selectCompressionStrategy(chunks.length, contextType);
-    const compressedChunks = compressChunks(chunks, this.MAX_CHUNKS_PER_CONTEXT, compressionStrategy);
+    const keywords = this.extractRelevantKeywords(text, contextType);
+    const compressedChunks = compressChunks(chunks, this.MAX_CHUNKS_PER_CONTEXT, compressionStrategy, keywords);
 
     // Trim to token limit
     const finalChunks = trimChunksToTokenLimit(compressedChunks, this.MAX_CONTEXT_TOKENS);
@@ -422,13 +423,92 @@ export class ContextStackManagerService {
       return 'first';
     }
 
+    // For global context with many chunks, use keyword-based selection
+    if (contextType === 'global' && totalChunks > 8) {
+      return 'keyword-based';
+    }
+
     // For global context, prefer distributed sampling
     if (contextType === 'global' && totalChunks > 5) {
       return 'distributed';
     }
 
+    // For module context with many chunks, use keyword-based selection
+    if (contextType === 'module' && totalChunks > 6) {
+      return 'keyword-based';
+    }
+
     // For module context, prefer first chunks (usually contain key info)
     return 'first';
+  }
+
+  /**
+   * Extract relevant keywords for chunk selection
+   */
+  private extractRelevantKeywords(text: string, contextType: 'global' | 'module'): string[] {
+    const keywords: string[] = [];
+    
+    // Common technical keywords
+    const techKeywords = [
+      'implementation', 'system', 'module', 'component', 'service', 'api', 'database',
+      'authentication', 'authorization', 'security', 'performance', 'scalability',
+      'architecture', 'design', 'requirements', 'features', 'functionality',
+      'integration', 'testing', 'deployment', 'configuration', 'optimization'
+    ];
+    
+    // Context-specific keywords
+    if (contextType === 'global') {
+      keywords.push(
+        'project', 'overview', 'summary', 'objectives', 'goals', 'scope',
+        'technology', 'stack', 'platform', 'infrastructure', 'framework'
+      );
+    } else {
+      keywords.push(
+        'task', 'step', 'process', 'workflow', 'procedure', 'method',
+        'algorithm', 'logic', 'business', 'rules', 'validation', 'processing'
+      );
+    }
+    
+    // Extract keywords that appear in the text
+    const lowerText = text.toLowerCase();
+    const relevantKeywords = [...techKeywords, ...keywords].filter(keyword => 
+      lowerText.includes(keyword.toLowerCase())
+    );
+    
+    // Add domain-specific keywords found in text
+    const domainKeywords = this.extractDomainKeywords(text);
+    relevantKeywords.push(...domainKeywords);
+    
+    return relevantKeywords.slice(0, 15); // Limit to top 15 keywords
+  }
+
+  /**
+   * Extract domain-specific keywords from text
+   */
+  private extractDomainKeywords(text: string): string[] {
+    const keywords: string[] = [];
+    
+    // Extract capitalized words (likely to be important terms)
+    const capitalizedWords = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/g) || [];
+    
+    // Filter and clean capitalized words
+    const filteredWords = capitalizedWords
+      .filter(word => word.length > 3 && word.length < 20)
+      .filter(word => !['The', 'This', 'That', 'With', 'From', 'When', 'Where'].includes(word))
+      .slice(0, 10);
+    
+    keywords.push(...filteredWords);
+    
+    // Extract quoted terms (often important concepts)
+    const quotedTerms = text.match(/"([^"]+)"/g) || [];
+    const cleanQuoted = quotedTerms
+      .map(term => term.replace(/"/g, ''))
+      .filter(term => term.length > 2 && term.length < 30)
+      .slice(0, 5);
+    
+    keywords.push(...cleanQuoted);
+    
+    return keywords;
   }
 
   /**
