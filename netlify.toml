@@ -19,14 +19,6 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Konfigurasi untuk Commandbar plugin
-[[plugins]]
-  package = "@commandbar/netlify-plugin-commandbar"
-  
-  [plugins.inputs]
-    # Specify the correct path to index.html after build
-    indexPath = "public/index.html"
-
 # Redirects untuk SPA routing
 [[redirects]]
   from = "/*"

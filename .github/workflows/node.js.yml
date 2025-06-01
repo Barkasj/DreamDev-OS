@@ -26,6 +26,19 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+        cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./prompt-orchestrator-frontend
+    - name: Run linting
+      run: npm run lint
+      working-directory: ./prompt-orchestrator-frontend
+    - name: Run type checking
+      run: npm run type-check
+      working-directory: ./prompt-orchestrator-frontend
+    - name: Build application
+      run: npm run build
+      working-directory: ./prompt-orchestrator-frontend
+    - name: Run tests
+      run: npm test
+      working-directory: ./prompt-orchestrator-frontend
