@@ -1,12 +1,12 @@
 [build]
   # Build command untuk Next.js project
-  command = "cd prompt-orchestrator-frontend && npm ci && npm run build"
+  command = "npm ci && npm run build"
   
-  # Directory yang berisi hasil build Next.js
-  publish = "prompt-orchestrator-frontend/.next"
+  # For @netlify/plugin-nextjs, the publish directory is handled automatically
+  # publish = ".next"
   
   # Base directory untuk build
-  base = "."
+  base = "prompt-orchestrator-frontend"
 
 [build.environment]
   # Node.js version
@@ -25,7 +25,7 @@
   
   [plugins.inputs]
     # Specify the correct path to index.html after build
-    indexPath = "prompt-orchestrator-frontend/.next/server/pages/index.html"
+    indexPath = "public/index.html"
 
 # Redirects untuk SPA routing
 [[redirects]]
@@ -42,6 +42,6 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Functions configuration untuk API routes
-[functions]
-  directory = "prompt-orchestrator-frontend/.next/server/pages/api"
+# Functions configuration untuk API routes (handled by @netlify/plugin-nextjs)
+# [functions]
+#   directory = "prompt-orchestrator-frontend/.next/server/pages/api"
