@@ -76,7 +76,8 @@ export default function Home() {
         return;
       }
 
-      const result: PrdProcessResponse = await response.json();
+      const apiResponse = await response.json();
+      const result: PrdProcessResponse = apiResponse.data || apiResponse;
 
       // Extract available tasks from the task tree
       const flattenTasks = (tasks: TaskNode[]): AvailableTask[] => {
@@ -138,7 +139,8 @@ export default function Home() {
         return;
       }
 
-      const result: PromptCompositionResult = await response.json();
+      const apiResponse = await response.json();
+      const result = apiResponse.data || apiResponse;
 
       // Find selected task from task tree for UI purposes
       const findTaskInTree = (tasks: TaskNode[], targetId: string): TaskNode | null => {
@@ -157,8 +159,8 @@ export default function Home() {
       updateState({
         isLoading: false,
         selectedTask: selectedTask || null,
-        currentPrompt: result.promptText || '',
-        promptMetadata: result.metadata || null,
+        currentPrompt: result.promptResult?.promptText || result.promptText || '',
+        promptMetadata: result.promptResult?.metadata || result.metadata || null,
         activeTab: 'prompt',
         error: null
       });
