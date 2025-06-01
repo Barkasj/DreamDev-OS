@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import { Upload, TreePine, FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Upload, TreePine, FileText, AlertCircle, CheckCircle, Loader2, BookOpen } from 'lucide-react';
 
 import PrdUpload from '@/components/PrdUpload';
 import TaskTreeDisplay from '@/components/TaskTreeDisplay';
 import PromptDisplay from '@/components/PromptDisplay';
+import ReportDisplay from '@/components/ReportDisplay';
 import { AppState, TaskNode, AvailableTask } from '@/types';
 
 // Interface untuk API responses
@@ -173,7 +174,7 @@ export default function Home() {
     }
   };
 
-  const handleTabChange = (tab: 'upload' | 'tree' | 'prompt') => {
+  const handleTabChange = (tab: 'upload' | 'tree' | 'prompt' | 'reports') => {
     updateState({ activeTab: tab, error: null });
   };
 
@@ -212,12 +213,20 @@ export default function Home() {
           />
         );
 
+      case 'reports':
+        return (
+          <ReportDisplay
+            projectId={state.projectId}
+            isLoading={state.isLoading}
+          />
+        );
+
       default:
         return null;
     }
   };
 
-  const getTabIcon = (tab: 'upload' | 'tree' | 'prompt') => {
+  const getTabIcon = (tab: 'upload' | 'tree' | 'prompt' | 'reports') => {
     switch (tab) {
       case 'upload':
         return <Upload className="h-5 w-5" />;
@@ -225,12 +234,14 @@ export default function Home() {
         return <TreePine className="h-5 w-5" />;
       case 'prompt':
         return <FileText className="h-5 w-5" />;
+      case 'reports':
+        return <BookOpen className="h-5 w-5" />;
       default:
         return null;
     }
   };
 
-  const getTabLabel = (tab: 'upload' | 'tree' | 'prompt') => {
+  const getTabLabel = (tab: 'upload' | 'tree' | 'prompt' | 'reports') => {
     switch (tab) {
       case 'upload':
         return 'Upload PRD';
@@ -238,17 +249,21 @@ export default function Home() {
         return 'Task Tree';
       case 'prompt':
         return 'Generated Prompt';
+      case 'reports':
+        return 'Project Reports';
       default:
         return '';
     }
   };
 
-  const isTabDisabled = (tab: 'upload' | 'tree' | 'prompt') => {
+  const isTabDisabled = (tab: 'upload' | 'tree' | 'prompt' | 'reports') => {
     switch (tab) {
       case 'tree':
         return state.availableTasks.length === 0;
       case 'prompt':
         return !state.currentPrompt;
+      case 'reports':
+        return !state.projectId;
       default:
         return false;
     }
@@ -309,7 +324,7 @@ export default function Home() {
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
-            {(['upload', 'tree', 'prompt'] as const).map((tab) => (
+            {(['upload', 'tree', 'prompt', 'reports'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}

@@ -89,7 +89,7 @@ export interface AppState {
   promptMetadata: PromptCompositionResult['metadata'] | null;
 
   // UI State
-  activeTab: 'upload' | 'tree' | 'prompt';
+  activeTab: 'upload' | 'tree' | 'prompt' | 'reports';
   isLoading: boolean;
   error: string | null;
 
