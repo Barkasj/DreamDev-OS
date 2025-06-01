@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/* DreamDev OS Global Styles */
+
+:root {
+  /* Light mode colors */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* DreamDev OS Brand Colors */
+  --primary: #2563eb;        /* Blue-600 */
+  --primary-dark: #1d4ed8;   /* Blue-700 */
+  --secondary: #64748b;      /* Slate-500 */
+  --accent: #10b981;         /* Emerald-500 */
+  --warning: #f59e0b;        /* Amber-500 */
+  --error: #ef4444;          /* Red-500 */
+
+  /* UI Colors */
+  --muted: #f8fafc;          /* Slate-50 */
+  --muted-foreground: #64748b; /* Slate-500 */
+  --border: #e2e8f0;         /* Slate-200 */
+  --input: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #0f172a; /* Slate-900 */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode colors */
+    --background: #0a0a0a;
+    --foreground: #ededed;
+
+    /* Adjusted brand colors for dark mode */
+    --primary: #3b82f6;        /* Blue-500 */
+    --primary-dark: #2563eb;   /* Blue-600 */
+    --secondary: #94a3b8;      /* Slate-400 */
+    --accent: #34d399;         /* Emerald-400 */
+
+    /* Dark UI colors */
+    --muted: #1e293b;          /* Slate-800 */
+    --muted-foreground: #94a3b8; /* Slate-400 */
+    --border: #334155;         /* Slate-700 */
+    --input: #1e293b;          /* Slate-800 */
+    --card: #1e293b;           /* Slate-800 */
+    --card-foreground: #f1f5f9; /* Slate-100 */
+  }
+}
+
+body {
+  background: var(--background);
+  color: #111827; /* Force dark text for better contrast */
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Custom utility classes for DreamDev OS */
+.dreamdev-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow);
+}
+
+.dreamdev-button-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.dreamdev-button-primary:hover {
+  background: var(--primary-dark);
+}
+
+.dreamdev-input {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground);
+}
+
+.dreamdev-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Prose styles for markdown content */
+.prose-dreamdev {
+  color: #1f2937; /* gray-800 for better contrast */
+  max-width: none;
+  line-height: 1.7;
+}
+
+.prose-dreamdev h1,
+.prose-dreamdev h2,
+.prose-dreamdev h3,
+.prose-dreamdev h4 {
+  color: #111827; /* gray-900 for maximum contrast */
+  font-weight: 700;
+}
+
+.prose-dreamdev h1 {
+  font-size: 1.875rem;
+  margin-bottom: 1rem;
+}
+
+.prose-dreamdev h2 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose-dreamdev h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-dreamdev p {
+  color: #1f2937; /* gray-800 */
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.prose-dreamdev li {
+  color: #1f2937; /* gray-800 */
+  margin-bottom: 0.5rem;
+}
+
+.prose-dreamdev strong {
+  color: #111827; /* gray-900 */
+  font-weight: 600;
+}
+
+.prose-dreamdev code {
+  background: #f3f4f6; /* gray-100 */
+  color: #111827; /* gray-900 */
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  border: 1px solid #d1d5db; /* gray-300 */
+  font-weight: 500;
+}
+
+.prose-dreamdev pre {
+  background: #f9fafb; /* gray-50 */
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  color: #111827; /* gray-900 */
+}
+
+.prose-dreamdev blockquote {
+  border-left: 4px solid var(--primary);
+  background: #eff6ff; /* blue-50 */
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0.375rem;
+  font-style: italic;
+  color: #1f2937; /* gray-800 */
+}
+
+/* Enhanced text contrast utilities */
+.text-high-contrast {
+  color: #111827 !important; /* gray-900 */
+}
+
+.text-medium-contrast {
+  color: #1f2937 !important; /* gray-800 */
+}
+
+.text-readable {
+  color: #374151 !important; /* gray-700 */
+  font-weight: 500;
+}
+
+/* Global text contrast fixes */
+* {
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #111827 !important; /* gray-900 for all headings */
+  font-weight: 600;
+}
+
+p, span, div {
+  color: #1f2937; /* gray-800 for body text */
+}
+
+label {
+  color: #111827 !important; /* gray-900 for labels */
+  font-weight: 500;
+}
+
+button {
+  font-weight: 500;
+}
+
+/* Override Tailwind gray text classes for better contrast */
+.text-gray-600 {
+  color: #374151 !important; /* gray-700 instead */
+}
+
+.text-gray-500 {
+  color: #4b5563 !important; /* gray-600 instead */
+}
+
+.text-gray-400 {
+  color: #6b7280 !important; /* gray-500 instead */
+}
+
+/* Ensure all text inputs have good contrast */
+input, textarea {
+  color: #111827 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #6b7280 !important; /* gray-500 for placeholders */
+}
+
+/* Force high contrast for all text elements */
+.text-gray-900 {
+  color: #111827 !important;
+}
+
+.text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.text-gray-700 {
+  color: #374151 !important;
+}
+
+/* Specific fixes for common UI elements */
+nav, header, main, footer {
+  color: #111827;
+}
+
+/* Button text contrast */
+button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600) {
+  color: #111827 !important;
+}
+
+/* Ensure all interactive elements are visible */
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Tab navigation fixes */
+.border-blue-500 {
+  border-color: #3b82f6 !important;
+}
+
+.text-blue-600 {
+  color: #2563eb !important;
+}
+
+.text-blue-800 {
+  color: #1e40af !important;
+}
+
+/* Status indicators */
+.text-green-600 {
+  color: #16a34a !important;
+}
+
+.text-red-600 {
+  color: #dc2626 !important;
+}

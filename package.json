@@ -1,0 +1,20 @@
+{
+  "name": "dreamdev-os",
+  "version": "1.0.0",
+  "description": "AI orchestration system that generates comprehensive step-by-step prompts using four thinking modules",
+  "main": "prompt-orchestrator-frontend",
+  "scripts": {
+    "dev": "cd prompt-orchestrator-frontend && npm run dev",
+    "build": "cd prompt-orchestrator-frontend && npm run build",
+    "start": "cd prompt-orchestrator-frontend && npm run start",
+    "test": "cd prompt-orchestrator-frontend && npm test",
+    "install-deps": "cd prompt-orchestrator-frontend && npm install"
+  },
+  "keywords": ["ai", "orchestration", "prompt-generation", "task-automation", "mongodb", "nextjs"],
+  "author": "DreamDev Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dreamdev/dreamdev-os"
+  }
+}
