@@ -9,6 +9,8 @@
 
 **AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**. Sistem ini membantu developer mengubah Product Requirements Document (PRD) menjadi task tree yang terstruktur dan prompt yang actionable dengan mudah! 🎯
 
+> 💡 **New!** Smart Chunking dan Context Compression untuk optimasi token LLM - memecah teks panjang menjadi chunks yang manageable dengan intelligent overlap management.
+
 ## ✨ Features
 
 - 🧠 **AI Orchestration**: Sistem orkestrasi AI yang menganalisis PRD dan menghasilkan task tree hierarkis
@@ -123,7 +125,8 @@ Untuk konfigurasi Docker yang lebih detail, lihat [docker-compose.yml](docker-co
 ### 3. Generate Prompts ⚡
 - Pilih task dari tree untuk menghasilkan prompt terstruktur dan actionable
 - Prompt mencakup objective, context, execution steps, success criteria, dan debugging assistance
-- Smart chunking otomatis memecah context panjang menjadi chunks yang manageable untuk optimasi token LLM
+- **Smart chunking** otomatis memecah context panjang menjadi chunks yang manageable untuk optimasi token LLM
+- Copy dan download prompt dengan satu klik untuk kemudahan penggunaan
 
 ## 🧪 Testing
 
@@ -198,7 +201,7 @@ npm run db:health    # Check database health
 
 - **Bundle Size**: 59.7 kB (optimized)
 - **First Load JS**: 160 kB
-- **Test Coverage**: 78.94% (298/309 tests passing)
+- **Test Coverage**: 78.94% (309/310 tests passing)
 - **Build Time**: < 30 seconds
 - **TypeScript**: Strict mode enabled
 - **ESLint**: Zero errors
