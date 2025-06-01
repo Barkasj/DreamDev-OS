@@ -8,6 +8,8 @@ const nextConfig = {
   },
   serverExternalPackages: ['mongodb'],
   
+
+  
   // Environment variables
   env: {
     MONGODB_URI: process.env.MONGODB_URI,

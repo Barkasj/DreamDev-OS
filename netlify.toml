@@ -1,39 +1,10 @@
 [build]
-  # Build command untuk Next.js project
   command = "npm ci && npm run build"
-  
-  # For @netlify/plugin-nextjs, the publish directory is handled automatically
-  # publish = ".next"
-  
-  # Base directory untuk build
   base = "prompt-orchestrator-frontend"
 
 [build.environment]
-  # Node.js version
   NODE_VERSION = "18"
-  
-  # Environment variables
   NODE_ENV = "production"
 
-# Konfigurasi untuk Next.js
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Redirects untuk SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Headers untuk security
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Functions configuration untuk API routes (handled by @netlify/plugin-nextjs)
-# [functions]
-#   directory = "prompt-orchestrator-frontend/.next/server/pages/api"
