@@ -27,7 +27,7 @@ describe('ProjectService', () => {
   let mockDb: jest.Mocked<{ collection: jest.Mock }>;
   let mockCollection: jest.Mocked<{ insertOne: jest.Mock; findOne: jest.Mock; updateOne: jest.Mock }>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     projectService = new ProjectService();
     
     // Setup mock collection
