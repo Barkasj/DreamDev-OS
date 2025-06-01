@@ -7,6 +7,11 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
 env:
   NODE_VERSION: '18'
   MONGODB_URI: mongodb://localhost:27017/dreamdev_test
@@ -68,18 +73,19 @@ jobs:
         
       - name: 🧪 Run tests with coverage
         working-directory: ./prompt-orchestrator-frontend
-        run: npm run test:coverage
+        run: npm run test:ci
         env:
           CI: true
           
       - name: 📊 Upload coverage to Codecov
         if: matrix.node-version == 18
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           directory: ./prompt-orchestrator-frontend/coverage
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   # ===== BUILD TEST =====
   build:
@@ -107,7 +113,7 @@ jobs:
         run: npm run build
         
       - name: 📦 Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: prompt-orchestrator-frontend/.next
@@ -125,7 +131,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-cmd "mongo --eval 'db.adminCommand(\"ping\")'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -146,14 +152,21 @@ jobs:
         run: npm ci
         
       - name: 📥 Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-files
           path: prompt-orchestrator-frontend/.next
           
-      - name: 🔗 Run integration tests
+      - name: 🔗 Test MongoDB connection
         working-directory: ./prompt-orchestrator-frontend
-        run: npm test -- --testPathPattern="integration|api" --passWithNoTests
+        run: npm run db:health
+        env:
+          MONGODB_URI: ${{ env.MONGODB_URI }}
+          MONGODB_DB_NAME: ${{ env.MONGODB_DB_NAME }}
+          
+      - name: 🔗 Run API integration tests
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm run test:ci -- --testPathPattern="api" --passWithNoTests
         env:
           MONGODB_URI: ${{ env.MONGODB_URI }}
           MONGODB_DB_NAME: ${{ env.MONGODB_DB_NAME }}
@@ -182,7 +195,7 @@ jobs:
         run: npm ci
         
       - name: 📥 Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-files
           path: prompt-orchestrator-frontend/.next
@@ -221,7 +234,7 @@ jobs:
         run: npm ci
         
       - name: 📥 Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-files
           path: prompt-orchestrator-frontend/.next

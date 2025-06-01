@@ -10,6 +10,11 @@ on:
     - cron: '0 9 * * 1'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
 jobs:
   # ===== DEPENDENCY AUDIT =====
   dependency-audit:
@@ -44,7 +49,7 @@ jobs:
           npm audit --json > audit-report.json || true
           
       - name: 📤 Upload audit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: audit-report
           path: prompt-orchestrator-frontend/audit-report.json
@@ -84,7 +89,7 @@ jobs:
           fi
           
       - name: 📤 Upload outdated report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: outdated-report
           path: prompt-orchestrator-frontend/outdated-report.json
@@ -132,7 +137,7 @@ jobs:
           fi
           
       - name: 📤 Upload license report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: licenses-report
           path: prompt-orchestrator-frontend/licenses-report.json
@@ -157,7 +162,7 @@ jobs:
           args: --severity-threshold=high --file=prompt-orchestrator-frontend/package.json
           
       - name: 📤 Upload Snyk report
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: snyk.sarif
@@ -193,7 +198,7 @@ jobs:
           echo "Dev dependencies: $(npm ls --depth=0 --json | jq '.devDependencies | length')"
           
       - name: 📤 Upload dependency graph
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dependency-graph
           path: prompt-orchestrator-frontend/dependency-graph.json
@@ -208,7 +213,7 @@ jobs:
     
     steps:
       - name: 📥 Download all reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         
       - name: 📋 Generate security summary
         run: |
@@ -241,7 +246,7 @@ jobs:
           cat security-summary.md
           
       - name: 📤 Upload security summary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-summary
           path: security-summary.md
@@ -249,7 +254,7 @@ jobs:
           
       - name: 📢 Comment on PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');

@@ -10,6 +10,10 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   NODE_VERSION: '18'
 
@@ -54,7 +58,7 @@ jobs:
           temporaryPublicStorage: true
           
       - name: 📊 Upload Lighthouse results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lighthouse-results
           path: .lighthouseci
@@ -108,7 +112,7 @@ jobs:
           cat bundle-report.md
           
       - name: 📤 Upload bundle report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle-analysis
           path: prompt-orchestrator-frontend/bundle-report.md
@@ -177,7 +181,7 @@ jobs:
           cat quality-report.md
           
       - name: 📤 Upload quality report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-quality-report
           path: prompt-orchestrator-frontend/quality-report.md
@@ -245,7 +249,7 @@ jobs:
           cat accessibility-summary.md
           
       - name: 📤 Upload accessibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: accessibility-report
           path: |
@@ -262,7 +266,7 @@ jobs:
     
     steps:
       - name: 📥 Download all reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         
       - name: 📋 Generate performance summary
         run: |
@@ -305,7 +309,7 @@ jobs:
           cat performance-summary.md
           
       - name: 📤 Upload performance summary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: performance-summary
           path: performance-summary.md
@@ -313,7 +317,7 @@ jobs:
           
       - name: 📢 Comment on PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
