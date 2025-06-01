@@ -1,13 +1,13 @@
 # 🚀 DreamDev OS
 
 [![CI/CD Pipeline](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml)
-[![Test Coverage](https://img.shields.io/badge/coverage-84.39%25-green.svg)](https://github.com/Barkasj/DreamDev-OS/actions)
+[![Test Coverage](https://img.shields.io/badge/coverage-78.94%25-green.svg)](https://github.com/Barkasj/DreamDev-OS/actions)
 [![Dependencies](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.0+-black.svg)](https://nextjs.org/)
 
-**AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**. Sistem ini membantu developer mengubah Product Requirements Document (PRD) menjadi task tree yang terstruktur dan prompt yang actionable.
+**AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**. Sistem ini membantu developer mengubah Product Requirements Document (PRD) menjadi task tree yang terstruktur dan prompt yang actionable dengan mudah! 🎯
 
 ## ✨ Features
 
@@ -15,9 +15,10 @@
 - 📋 **Prompt Generation**: Menghasilkan prompt terstruktur dan actionable untuk setiap task
 - 🗄️ **MongoDB Integration**: Persistensi data dengan MongoDB untuk project dan task management
 - 🎯 **Context Management**: Global dan local context tracking untuk dependencies antar task
+- 📝 **Smart Chunking**: Intelligent text chunking dengan context compression untuk optimasi token LLM
 - 🔧 **Enhanced Debugging**: Comprehensive debugging assistance dan success criteria
 - 📱 **Modern UI**: Next.js frontend dengan TypeScript dan Tailwind CSS
-- 🧪 **Comprehensive Testing**: 281 tests dengan coverage 84.39%
+- 🧪 **Comprehensive Testing**: 309 tests dengan coverage 78.94%
 - 🔄 **CI/CD Pipeline**: Automated testing, building, dan deployment
 - 🔒 **Security Scanning**: Automated dependency vulnerability checks
 
@@ -110,18 +111,19 @@ Untuk konfigurasi Docker yang lebih detail, lihat [docker-compose.yml](docker-co
 
 ## 📋 Usage
 
-### 1. Upload PRD
+### 1. Upload PRD 📄
 - Upload file PRD (.txt, .md, .doc, .docx) atau paste text langsung
-- Sistem akan menganalisis dan mengekstrak entities (actors, systems, features)
+- Sistem akan menganalisis dan mengekstrak entities (actors, systems, features) secara otomatis
 - Contoh PRD dapat dilihat di [sample-prd-context-demo.md](sample-prd-context-demo.md)
 
-### 2. Generate Task Tree
-- Sistem menghasilkan task tree hierarkis berdasarkan PRD
+### 2. Generate Task Tree 🌳
+- Sistem menghasilkan task tree hierarkis berdasarkan PRD secara otomatis
 - Setiap task memiliki dependencies dan context yang jelas
 
-### 3. Generate Prompts
-- Pilih task dari tree untuk menghasilkan prompt terstruktur
+### 3. Generate Prompts ⚡
+- Pilih task dari tree untuk menghasilkan prompt terstruktur dan actionable
 - Prompt mencakup objective, context, execution steps, success criteria, dan debugging assistance
+- Smart chunking otomatis memecah context panjang menjadi chunks yang manageable untuk optimasi token LLM
 
 ## 🧪 Testing
 
@@ -155,7 +157,7 @@ npm test -- --verbose
 | Integration Tests | 100% | 10 | ✅ |
 | Security Tests | 93.75% | 16 | ✅ |
 | Performance Tests | 100% | 8 | ✅ |
-| **Total** | **84.39%** | **281** | ✅ |
+| **Total** | **78.94%** | **309** | ✅ |
 
 ## 🛠️ Development
 
@@ -187,6 +189,7 @@ npm run db:health    # Check database health
 - **Styling**: Tailwind CSS 4
 - **Database**: MongoDB 5.9
 - **Testing**: Jest 29, React Testing Library
+- **Text Processing**: Smart chunking dengan token optimization
 - **Code Quality**: ESLint, TypeScript
 - **Icons**: Lucide React
 - **HTTP Client**: Axios
@@ -195,7 +198,7 @@ npm run db:health    # Check database health
 
 - **Bundle Size**: 59.7 kB (optimized)
 - **First Load JS**: 160 kB
-- **Test Coverage**: 84.39% (251/281 tests passing)
+- **Test Coverage**: 78.94% (298/309 tests passing)
 - **Build Time**: < 30 seconds
 - **TypeScript**: Strict mode enabled
 - **ESLint**: Zero errors
