@@ -1,0 +1,327 @@
+name: ⚡ Performance & Quality Monitoring
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run every day at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # ===== LIGHTHOUSE PERFORMANCE =====
+  lighthouse:
+    name: 🏮 Lighthouse Performance
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+          
+      - name: 📥 Install dependencies
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm ci
+        
+      - name: 🏗️ Build application
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm run build
+        
+      - name: 🚀 Start application
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          npm start &
+          sleep 30
+        env:
+          PORT: 3000
+          
+      - name: 🏮 Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          
+      - name: 📊 Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-results
+          path: .lighthouseci
+          retention-days: 30
+
+  # ===== BUNDLE ANALYSIS =====
+  bundle-analysis:
+    name: 📦 Bundle Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+          
+      - name: 📥 Install dependencies
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm ci
+        
+      - name: 📦 Analyze bundle
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          echo "📦 Analyzing bundle size..."
+          npm run build
+          
+          # Install bundle analyzer
+          npm install -g webpack-bundle-analyzer
+          
+          # Generate bundle report
+          npx next build --profile
+          
+      - name: 📊 Bundle size report
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          echo "# 📦 Bundle Size Report" > bundle-report.md
+          echo "" >> bundle-report.md
+          echo "Generated on: $(date)" >> bundle-report.md
+          echo "" >> bundle-report.md
+          
+          echo "## 📊 Build Output" >> bundle-report.md
+          echo '```' >> bundle-report.md
+          npm run build 2>&1 | tail -20 >> bundle-report.md
+          echo '```' >> bundle-report.md
+          
+          cat bundle-report.md
+          
+      - name: 📤 Upload bundle report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-analysis
+          path: prompt-orchestrator-frontend/bundle-report.md
+          retention-days: 30
+
+  # ===== CODE QUALITY METRICS =====
+  code-quality:
+    name: 📊 Code Quality Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+          
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+          
+      - name: 📥 Install dependencies
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm ci
+        
+      - name: 🧪 Run tests with coverage
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm run test:coverage
+        
+      - name: 📊 SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: prompt-orchestrator-frontend
+          
+      - name: 📊 Generate quality report
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          echo "# 📊 Code Quality Report" > quality-report.md
+          echo "" >> quality-report.md
+          echo "Generated on: $(date)" >> quality-report.md
+          echo "" >> quality-report.md
+          
+          echo "## 🧪 Test Coverage" >> quality-report.md
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "- Statements: $(cat coverage/coverage-summary.json | jq '.total.statements.pct')%" >> quality-report.md
+            echo "- Branches: $(cat coverage/coverage-summary.json | jq '.total.branches.pct')%" >> quality-report.md
+            echo "- Functions: $(cat coverage/coverage-summary.json | jq '.total.functions.pct')%" >> quality-report.md
+            echo "- Lines: $(cat coverage/coverage-summary.json | jq '.total.lines.pct')%" >> quality-report.md
+          fi
+          echo "" >> quality-report.md
+          
+          echo "## 📁 File Statistics" >> quality-report.md
+          echo "- TypeScript files: $(find src -name '*.ts' -o -name '*.tsx' | wc -l)" >> quality-report.md
+          echo "- Test files: $(find src -name '*.test.*' -o -name '*.spec.*' | wc -l)" >> quality-report.md
+          echo "- Component files: $(find src/components -name '*.tsx' | wc -l)" >> quality-report.md
+          echo "" >> quality-report.md
+          
+          echo "## 🔍 Code Complexity" >> quality-report.md
+          echo "- Total lines of code: $(find src -name '*.ts' -o -name '*.tsx' | xargs wc -l | tail -1 | awk '{print $1}')" >> quality-report.md
+          
+          cat quality-report.md
+          
+      - name: 📤 Upload quality report
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-quality-report
+          path: prompt-orchestrator-frontend/quality-report.md
+          retention-days: 30
+
+  # ===== ACCESSIBILITY TESTING =====
+  accessibility:
+    name: ♿ Accessibility Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+          
+      - name: 📥 Install dependencies
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm ci
+        
+      - name: 🏗️ Build application
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm run build
+        
+      - name: 🚀 Start application
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          npm start &
+          sleep 30
+        env:
+          PORT: 3000
+          
+      - name: ♿ Run accessibility tests
+        run: |
+          npm install -g @axe-core/cli
+          
+          echo "♿ Running accessibility tests..."
+          axe http://localhost:3000 --save accessibility-report.json || true
+          
+      - name: 📊 Generate accessibility report
+        run: |
+          echo "# ♿ Accessibility Report" > accessibility-summary.md
+          echo "" >> accessibility-summary.md
+          echo "Generated on: $(date)" >> accessibility-summary.md
+          echo "" >> accessibility-summary.md
+          
+          if [ -f accessibility-report.json ]; then
+            violations=$(cat accessibility-report.json | jq '.violations | length')
+            echo "- Total violations: $violations" >> accessibility-summary.md
+            
+            if [ "$violations" -eq 0 ]; then
+              echo "- ✅ No accessibility violations found!" >> accessibility-summary.md
+            else
+              echo "- ⚠️ Accessibility issues detected" >> accessibility-summary.md
+            fi
+          else
+            echo "- ❌ Could not generate accessibility report" >> accessibility-summary.md
+          fi
+          
+          cat accessibility-summary.md
+          
+      - name: 📤 Upload accessibility report
+        uses: actions/upload-artifact@v3
+        with:
+          name: accessibility-report
+          path: |
+            accessibility-report.json
+            accessibility-summary.md
+          retention-days: 30
+
+  # ===== PERFORMANCE SUMMARY =====
+  performance-summary:
+    name: 📋 Performance Summary
+    runs-on: ubuntu-latest
+    needs: [lighthouse, bundle-analysis, code-quality, accessibility]
+    if: always()
+    
+    steps:
+      - name: 📥 Download all reports
+        uses: actions/download-artifact@v3
+        
+      - name: 📋 Generate performance summary
+        run: |
+          echo "# ⚡ Performance & Quality Summary" > performance-summary.md
+          echo "" >> performance-summary.md
+          echo "Generated on: $(date)" >> performance-summary.md
+          echo "" >> performance-summary.md
+          
+          echo "## 📊 Report Status" >> performance-summary.md
+          echo "" >> performance-summary.md
+          
+          if [ "${{ needs.lighthouse.result }}" == "success" ]; then
+            echo "- ✅ Lighthouse: Passed" >> performance-summary.md
+          else
+            echo "- ❌ Lighthouse: Failed" >> performance-summary.md
+          fi
+          
+          if [ "${{ needs.bundle-analysis.result }}" == "success" ]; then
+            echo "- ✅ Bundle Analysis: Passed" >> performance-summary.md
+          else
+            echo "- ❌ Bundle Analysis: Failed" >> performance-summary.md
+          fi
+          
+          if [ "${{ needs.code-quality.result }}" == "success" ]; then
+            echo "- ✅ Code Quality: Passed" >> performance-summary.md
+          else
+            echo "- ❌ Code Quality: Failed" >> performance-summary.md
+          fi
+          
+          if [ "${{ needs.accessibility.result }}" == "success" ]; then
+            echo "- ✅ Accessibility: Passed" >> performance-summary.md
+          else
+            echo "- ❌ Accessibility: Failed" >> performance-summary.md
+          fi
+          
+          echo "" >> performance-summary.md
+          echo "## 🔗 Detailed Reports" >> performance-summary.md
+          echo "Check the individual artifacts for detailed analysis." >> performance-summary.md
+          
+          cat performance-summary.md
+          
+      - name: 📤 Upload performance summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-summary
+          path: performance-summary.md
+          retention-days: 30
+          
+      - name: 📢 Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('performance-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
