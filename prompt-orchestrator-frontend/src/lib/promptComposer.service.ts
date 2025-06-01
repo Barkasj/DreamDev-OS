@@ -85,17 +85,17 @@ ${nextStepsInfo}
   // ===== HELPER METHODS =====
 
   /**
-   * Generate enhanced context stack dengan lapisan konteks yang berlapis
+   * Generate enhanced context stack dengan lapisan konteks yang berlapis dan chunked content
    */
   private generateEnhancedContextStack(task: TaskNode, project: ProjectDocument): string {
     const contextSections: string[] = [];
 
-    // Global Project Context
-    const globalContextInfo = this.generateGlobalContextInfo(project);
+    // Global Project Context dengan chunked details
+    const globalContextInfo = this.generateGlobalContextInfoWithChunks(project);
     contextSections.push(`- **Global Project Context**: ${globalContextInfo}`);
 
-    // Module Context
-    const moduleContextInfo = this.generateModuleContextInfo(task, project);
+    // Module Context dengan chunked details
+    const moduleContextInfo = this.generateModuleContextInfoWithChunks(task, project);
     if (moduleContextInfo) {
       contextSections.push(`- **Module Context**: ${moduleContextInfo}`);
     }
@@ -146,6 +146,70 @@ ${nextStepsInfo}
       : '';
 
     return `Modul '${relevantModule.moduleTitle}' - ${relevantModule.summary || 'N/A'}. ${entitiesInfo}`;
+  }
+
+  /**
+   * Generate global context information with chunked details
+   */
+  private generateGlobalContextInfoWithChunks(project: ProjectDocument): string {
+    // Get basic context info
+    const basicInfo = this.generateGlobalContextInfo(project);
+    
+    // Add chunked details if available
+    if (project.globalContextData?.detailedChunks && project.globalContextData.detailedChunks.length > 0) {
+      const chunks = project.globalContextData.detailedChunks;
+      const chunkDetails = chunks.slice(0, 2).map((chunk, index) => {
+        const preview = chunk.content.length > 200 
+          ? chunk.content.substring(0, 200) + '...' 
+          : chunk.content;
+        return `\n  - Detail Konteks Global (Bagian ${index + 1}/${chunks.length}): ${preview}`;
+      }).join('');
+      
+      return basicInfo + chunkDetails;
+    }
+    
+    return basicInfo;
+  }
+
+  /**
+   * Generate module context information with chunked details
+   */
+  private generateModuleContextInfoWithChunks(task: TaskNode, project: ProjectDocument): string | null {
+    if (!project.moduleContexts || project.moduleContexts.length === 0) {
+      return null;
+    }
+
+    // Cari module context yang relevan
+    const relevantModule = this.contextStackManager.findRelevantModuleContext(
+      task,
+      project.moduleContexts
+    );
+
+    if (!relevantModule) {
+      return null;
+    }
+
+    // Get basic module info
+    const entitiesInfo = relevantModule.relatedEntities
+      ? `Entitas: ${this.formatEntitiesInline(relevantModule.relatedEntities)}`
+      : '';
+
+    let moduleInfo = `Modul '${relevantModule.moduleTitle}' - ${relevantModule.summary || 'N/A'}. ${entitiesInfo}`;
+
+    // Add chunked details if available
+    if (relevantModule.detailedChunks && relevantModule.detailedChunks.length > 0) {
+      const chunks = relevantModule.detailedChunks;
+      const chunkDetails = chunks.slice(0, 1).map((chunk, index) => {
+        const preview = chunk.content.length > 150 
+          ? chunk.content.substring(0, 150) + '...' 
+          : chunk.content;
+        return `\n  - Detail Modul (Bagian ${index + 1}/${chunks.length}): ${preview}`;
+      }).join('');
+      
+      moduleInfo += chunkDetails;
+    }
+
+    return moduleInfo;
   }
 
   /**

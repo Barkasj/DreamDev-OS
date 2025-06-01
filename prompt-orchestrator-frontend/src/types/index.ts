@@ -182,6 +182,22 @@ export interface GlobalContext {
   projectTypeHints?: string; // Misal: web app, mobile, API
   complexityLevel?: 'simple' | 'medium' | 'complex';
   techStackHints?: string[]; // Teknologi utama yang disebut di PRD
+  detailedChunks?: Array<{
+    content: string;
+    metadata: {
+      index: number;
+      startPosition: number;
+      endPosition: number;
+      size: number;
+      hasOverlap: boolean;
+    };
+  }>; // Smart chunked content for detailed context
+  compressionMetadata?: {
+    originalLength: number;
+    chunksCount: number;
+    compressionRatio: number;
+    strategy: 'first' | 'distributed' | 'keyword-based';
+  };
 }
 
 // Interface untuk Module Context
@@ -190,6 +206,22 @@ export interface ModuleContext {
   moduleTitle: string; // Judul section/modul utama dari PRD
   summary?: string; // Ringkasan dari section/modul tersebut
   relatedEntities?: ExtractedEntities; // Entitas yang relevan untuk modul ini
+  detailedChunks?: Array<{
+    content: string;
+    metadata: {
+      index: number;
+      startPosition: number;
+      endPosition: number;
+      size: number;
+      hasOverlap: boolean;
+    };
+  }>; // Smart chunked content for detailed context
+  compressionMetadata?: {
+    originalLength: number;
+    chunksCount: number;
+    compressionRatio: number;
+    strategy: 'first' | 'distributed' | 'keyword-based';
+  };
 }
 
 // Interface untuk Step Context

@@ -1,13 +1,15 @@
 # 🚀 DreamDev OS
 
 [![CI/CD Pipeline](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml)
-[![Test Coverage](https://img.shields.io/badge/coverage-58.95%25-yellow.svg)](https://github.com/Barkasj/DreamDev-OS/actions)
+[![Test Coverage](https://img.shields.io/badge/coverage-78.94%25-green.svg)](https://github.com/Barkasj/DreamDev-OS/actions)
 [![Dependencies](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.0+-black.svg)](https://nextjs.org/)
 
-**AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**.
+**AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**. Sistem ini membantu developer mengubah Product Requirements Document (PRD) menjadi task tree yang terstruktur dan prompt yang actionable dengan mudah! 🎯
+
+> 💡 **New!** Smart Chunking dan Context Compression untuk optimasi token LLM - memecah teks panjang menjadi chunks yang manageable dengan intelligent overlap management.
 
 ## ✨ Features
 
@@ -15,15 +17,16 @@
 - 📋 **Prompt Generation**: Menghasilkan prompt terstruktur dan actionable untuk setiap task
 - 🗄️ **MongoDB Integration**: Persistensi data dengan MongoDB untuk project dan task management
 - 🎯 **Context Management**: Global dan local context tracking untuk dependencies antar task
+- 📝 **Smart Chunking**: Intelligent text chunking dengan context compression untuk optimasi token LLM
 - 🔧 **Enhanced Debugging**: Comprehensive debugging assistance dan success criteria
 - 📱 **Modern UI**: Next.js frontend dengan TypeScript dan Tailwind CSS
-- 🧪 **Comprehensive Testing**: 186 tests dengan coverage 58.95%
+- 🧪 **Comprehensive Testing**: 309 tests dengan coverage 78.94%
 - 🔄 **CI/CD Pipeline**: Automated testing, building, dan deployment
 - 🔒 **Security Scanning**: Automated dependency vulnerability checks
 
 ## 🏗️ Architecture
 
-```
+```bash
 DreamDev OS/
 ├── prompt-orchestrator-frontend/    # Next.js Frontend Application
 │   ├── src/
@@ -63,14 +66,19 @@ DreamDev OS/
    ```bash
    # Copy environment template
    cp .env.example .env.local
+   ```
    
-   # Edit .env.local dengan konfigurasi Anda:
+   Edit `.env.local` dengan konfigurasi Anda:
+   ```env
    MONGODB_URI=mongodb://localhost:27017/dreamdev_os
    MONGODB_DB_NAME=dreamdev_os
    NODE_ENV=development
    ```
 
 4. **Start MongoDB** (jika menggunakan local MongoDB)
+   
+   Lihat [MongoDB Setup Instructions](MONGODB_SETUP_INSTRUCTIONS.md) untuk panduan lengkap.
+   
    ```bash
    # macOS dengan Homebrew
    brew services start mongodb-community
@@ -101,19 +109,24 @@ docker-compose up -d
 # Akses aplikasi di http://localhost:3000
 ```
 
+Untuk konfigurasi Docker yang lebih detail, lihat [docker-compose.yml](docker-compose.yml).
+
 ## 📋 Usage
 
-### 1. Upload PRD
+### 1. Upload PRD 📄
 - Upload file PRD (.txt, .md, .doc, .docx) atau paste text langsung
-- Sistem akan menganalisis dan mengekstrak entities (actors, systems, features)
+- Sistem akan menganalisis dan mengekstrak entities (actors, systems, features) secara otomatis
+- Contoh PRD dapat dilihat di [sample-prd-context-demo.md](sample-prd-context-demo.md)
 
-### 2. Generate Task Tree
-- Sistem menghasilkan task tree hierarkis berdasarkan PRD
+### 2. Generate Task Tree 🌳
+- Sistem menghasilkan task tree hierarkis berdasarkan PRD secara otomatis
 - Setiap task memiliki dependencies dan context yang jelas
 
-### 3. Generate Prompts
-- Pilih task dari tree untuk menghasilkan prompt terstruktur
+### 3. Generate Prompts ⚡
+- Pilih task dari tree untuk menghasilkan prompt terstruktur dan actionable
 - Prompt mencakup objective, context, execution steps, success criteria, dan debugging assistance
+- **Smart chunking** otomatis memecah context panjang menjadi chunks yang manageable untuk optimasi token LLM
+- Copy dan download prompt dengan satu klik untuk kemudahan penggunaan
 
 ## 🧪 Testing
 
@@ -142,7 +155,12 @@ npm test -- --verbose
 | PromptDisplay | 93.1% | 14 | ✅ |
 | TaskNodeItem | 96.55% | 33 | ✅ |
 | TaskTreeDisplay | 60% | 16 | ✅ |
-| **Total** | **58.95%** | **186** | ✅ |
+| Core Services | 85.44% | 95 | ✅ |
+| API Routes | 89.05% | 24 | ✅ |
+| Integration Tests | 100% | 10 | ✅ |
+| Security Tests | 93.75% | 16 | ✅ |
+| Performance Tests | 100% | 8 | ✅ |
+| **Total** | **78.94%** | **309** | ✅ |
 
 ## 🛠️ Development
 
@@ -174,6 +192,7 @@ npm run db:health    # Check database health
 - **Styling**: Tailwind CSS 4
 - **Database**: MongoDB 5.9
 - **Testing**: Jest 29, React Testing Library
+- **Text Processing**: Smart chunking dengan token optimization
 - **Code Quality**: ESLint, TypeScript
 - **Icons**: Lucide React
 - **HTTP Client**: Axios
@@ -182,7 +201,7 @@ npm run db:health    # Check database health
 
 - **Bundle Size**: 59.7 kB (optimized)
 - **First Load JS**: 160 kB
-- **Test Coverage**: 58.95% (186/186 tests passing)
+- **Test Coverage**: 78.94% (309/310 tests passing)
 - **Build Time**: < 30 seconds
 - **TypeScript**: Strict mode enabled
 - **ESLint**: Zero errors
@@ -212,7 +231,7 @@ npm run db:health    # Check database health
 
 For full CI/CD functionality, configure these secrets in GitHub:
 
-```bash
+```env
 # Deployment (Optional)
 VERCEL_TOKEN=your_vercel_token
 VERCEL_ORG_ID=your_vercel_org_id
@@ -225,6 +244,8 @@ SNYK_TOKEN=your_snyk_token
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for detailed information.
+
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
@@ -233,7 +254,7 @@ SNYK_TOKEN=your_snyk_token
 
 ### Development Workflow
 
-1. **Setup**: Follow installation instructions
+1. **Setup**: Follow [installation instructions](#-quick-start)
 2. **Code**: Make your changes with tests
 3. **Test**: Run `npm test` and `npm run lint`
 4. **Build**: Verify with `npm run build`
@@ -243,7 +264,7 @@ SNYK_TOKEN=your_snyk_token
 
 - ✅ TypeScript strict mode
 - ✅ ESLint compliance
-- ✅ Test coverage > 50%
+- ✅ Test coverage > 80%
 - ✅ Component tests required
 - ✅ Accessibility compliance
 
