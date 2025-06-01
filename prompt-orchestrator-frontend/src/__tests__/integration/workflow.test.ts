@@ -6,7 +6,7 @@
 import { PrdParserService } from '../../lib/prdParser.service';
 import { PromptComposerService } from '../../lib/promptComposer.service';
 import { ContextStackManagerService } from '../../lib/contextStackManager.service';
-import { ProjectDocument, TaskNode, ExtractedEntities } from '../../types';
+import { ProjectDocument, TaskNode } from '../../types';
 
 describe('Integration Tests - Complete Workflow', () => {
   let prdParser: PrdParserService;

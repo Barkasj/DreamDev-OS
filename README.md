@@ -1,11 +1,11 @@
 # 🚀 DreamDev OS
 
-[![CI/CD Pipeline](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/ci.yml)
-[![Test Coverage](https://img.shields.io/badge/coverage-78.94%25-green.svg)](https://github.com/Barkasj/DreamDev-OS/actions)
-[![Dependencies](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/dependency-check.yml)
+[![Vercel Deployment](https://github.com/Barkasj/DreamDev-OS/actions/workflows/vercel.yml/badge.svg)](https://github.com/Barkasj/DreamDev-OS/actions/workflows/vercel.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.0+-black.svg)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black.svg)](https://nextjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.16.0-green.svg)](https://www.mongodb.com/)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black.svg)](https://vercel.com/barkasjs-projects/dream-dev-os)
 
 **AI Orchestration System** yang menghasilkan step-by-step prompts super lengkap menggunakan empat thinking modules: **Logical**, **Analytical**, **Computational**, dan **Procedural**. Sistem ini membantu developer mengubah Product Requirements Document (PRD) menjadi task tree yang terstruktur dan prompt yang actionable dengan mudah! 🎯
 
@@ -100,16 +100,17 @@ DreamDev OS/
    http://localhost:3000
    ```
 
-### 🐳 Docker Setup (Alternative)
+### 🚀 Production Build (Alternative)
 
 ```bash
-# Build dan jalankan dengan Docker Compose
-docker-compose up -d
+# Build untuk production
+npm run build
+
+# Start production server
+npm start
 
 # Akses aplikasi di http://localhost:3000
 ```
-
-Untuk konfigurasi Docker yang lebih detail, lihat [docker-compose.yml](docker-compose.yml).
 
 ## 📋 Usage
 
@@ -207,13 +208,52 @@ npm run db:health    # Check database health
 - **ESLint**: Zero errors
 - **Dependencies**: Regularly updated & scanned
 
+## 🚀 Deployment
+
+### Vercel Deployment (Recommended)
+
+**Live Demo**: [https://vercel.com/barkasjs-projects/dream-dev-os](https://vercel.com/barkasjs-projects/dream-dev-os)
+
+**Project ID**: `prj_tET3nrGYAWtjpu4jGYiELLaso05e`
+
+#### Automatic Deployment
+- **Production**: Push to `main` branch triggers automatic deployment
+- **Preview**: Pull requests create preview deployments
+- **Environment Variables**: Configure in Vercel dashboard
+
+#### Required Environment Variables
+```env
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB_NAME=your_database_name
+```
+
+#### Manual Deployment
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy to Vercel
+vercel --prod
+```
+
+### Alternative Deployment Options
+
+#### Manual Production Build
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
 ## 🔄 CI/CD & Automation
 
 ### GitHub Actions Workflows
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| 🚀 **CI/CD Pipeline** | Push, PR | Lint, test, build, deploy |
+| 🚀 **Vercel Deployment** | Push, PR | Lint, test, build, deploy to Vercel |
 | 🔒 **Dependency Check** | Push, PR, Schedule | Security audit, license check |
 | 🔄 **Auto Update** | Schedule, Manual | Dependency updates |
 | ⚡ **Performance** | Push to main, Schedule | Lighthouse, bundle analysis |
@@ -232,10 +272,14 @@ npm run db:health    # Check database health
 For full CI/CD functionality, configure these secrets in GitHub:
 
 ```env
-# Deployment (Optional)
+# Vercel Deployment (Required for auto-deployment)
 VERCEL_TOKEN=your_vercel_token
 VERCEL_ORG_ID=your_vercel_org_id
-VERCEL_PROJECT_ID=your_vercel_project_id
+# VERCEL_PROJECT_ID is hardcoded: prj_tET3nrGYAWtjpu4jGYiELLaso05e
+
+# Database (Required for production)
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB_NAME=your_database_name
 
 # Code Quality (Optional)
 SONAR_TOKEN=your_sonarcloud_token

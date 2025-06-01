@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "name": "dream-dev-os",
+  "builds": [
+    {
+      "src": "prompt-orchestrator-frontend/package.json",
+      "use": "@vercel/next",
+      "config": {
+        "distDir": ".next"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "prompt-orchestrator-frontend/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "MONGODB_URI": "@mongodb_uri",
+      "MONGODB_DB_NAME": "@mongodb_db_name"
+    }
+  },
+  "functions": {
+    "prompt-orchestrator-frontend/src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}

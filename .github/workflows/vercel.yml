@@ -1,0 +1,65 @@
+name: 🚀 Vercel Deployment
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  VERCEL_ORG_ID: dream-dev-os
+  VERCEL_PROJECT_ID: prj_tET3nrGYAWtjpu4jGYiELLaso05e
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Vercel
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+          
+      - name: 📥 Install dependencies
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm ci
+        
+      - name: 🔍 Lint & Type Check
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          npm run lint
+          npm run type-check
+          
+      - name: 🧪 Run Tests
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm test -- --passWithNoTests
+        
+      - name: 🏗️ Build
+        working-directory: ./prompt-orchestrator-frontend
+        run: npm run build
+        
+      - name: 📦 Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: 🔗 Pull Vercel Environment
+        working-directory: ./prompt-orchestrator-frontend
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🏗️ Build Project Artifacts
+        working-directory: ./prompt-orchestrator-frontend
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🚀 Deploy to Vercel
+        working-directory: ./prompt-orchestrator-frontend
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          fi

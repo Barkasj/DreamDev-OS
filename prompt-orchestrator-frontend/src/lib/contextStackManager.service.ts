@@ -11,8 +11,7 @@ import {
   compressChunks, 
   estimateTokenCount, 
   trimChunksToTokenLimit,
-  ChunkingOptions,
-  TextChunk 
+  ChunkingOptions 
 } from '../utils/textUtils';
 
 export class ContextStackManagerService {
