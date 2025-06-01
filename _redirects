@@ -1,0 +1,9 @@
+# Netlify redirects file untuk Next.js SPA routing
+/*    /index.html   200
+
+# API routes redirect
+/api/*  /.netlify/functions/:splat  200
+
+# Specific redirects
+/home   /   301
+/dashboard  /   301
