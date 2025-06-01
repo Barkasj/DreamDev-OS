@@ -277,7 +277,7 @@ export function runChunkingDemo() {
   console.log('-'.repeat(60));
   
   // Update project with extracted contexts
-  project.globalContextData = globalContext;
+  project.globalContextData = globalContext || undefined;
   project.moduleContexts = moduleContexts;
   
   const promptResult = promptComposer.composePromptWithMetadataFromProject(
