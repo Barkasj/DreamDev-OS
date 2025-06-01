@@ -27,6 +27,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: 'prompt-orchestrator-frontend/package-lock.json'
+    - name: Debug - List files
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Files in root:"
+        ls -la
+        echo "Files in prompt-orchestrator-frontend:"
+        ls -la prompt-orchestrator-frontend/
     - name: Install dependencies
       run: npm ci
       working-directory: ./prompt-orchestrator-frontend
