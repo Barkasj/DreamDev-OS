@@ -3,7 +3,7 @@
  * Singleton pattern untuk connection MongoDB di Next.js
  */
 
-import { MongoClient, Db } from 'mongodb';
+import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
@@ -38,38 +38,34 @@ if (!cached) {
 }
 
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  console.log('🔗 Attempting MongoDB connection...');
-  console.log('📍 MONGODB_URI configured:', MONGODB_URI ? 'YES' : 'NO');
-  console.log('📍 MONGODB_DB_NAME:', MONGODB_DB_NAME);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔗 Attempting MongoDB connection...');
+    console.log('📍 MONGODB_URI configured:', MONGODB_URI ? 'YES' : 'NO');
+    console.log('📍 MONGODB_DB_NAME:', MONGODB_DB_NAME);
+  }
 
   if (cached!.conn) {
-    console.log('✅ Using cached MongoDB connection');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Using cached MongoDB connection');
+    }
     return cached!.conn;
   }
 
   if (!cached!.promise) {
-    console.log('🔄 Creating new MongoDB connection...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔄 Creating new MongoDB connection...');
+    }
 
     // Detect if using Atlas or local MongoDB
     const isAtlas = MONGODB_URI!.includes('mongodb+srv://');
 
-    const opts = {
+    const opts: MongoClientOptions = {
       // Connection options from environment variables
       maxPoolSize: parseInt(process.env.MONGODB_MAX_POOL_SIZE || '10'),
-      serverSelectionTimeoutMS: parseInt(process.env.MONGODB_SERVER_SELECTION_TIMEOUT || '30000'), // Increased
+      serverSelectionTimeoutMS: parseInt(process.env.MONGODB_SERVER_SELECTION_TIMEOUT || '30000'),
       socketTimeoutMS: parseInt(process.env.MONGODB_SOCKET_TIMEOUT || '45000'),
-      connectTimeoutMS: parseInt(process.env.MONGODB_CONNECT_TIMEOUT || '30000'), // Increased
+      connectTimeoutMS: parseInt(process.env.MONGODB_CONNECT_TIMEOUT || '30000'),
       family: 4, // Use IPv4, skip trying IPv6
-
-      // SSL/TLS Configuration - only for Atlas
-      ...(isAtlas && {
-        tls: true,
-        tlsAllowInvalidCertificates: false,
-        tlsAllowInvalidHostnames: false,
-        // Additional SSL options for troubleshooting
-        authSource: 'admin',
-        authMechanism: 'SCRAM-SHA-1',
-      }),
 
       // Retry configuration
       retryWrites: true,
@@ -83,11 +79,23 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
       appName: 'DreamDevOS'
     };
 
-    console.log('⚙️ Connection options:', opts);
+    // Add Atlas-specific options only if using Atlas
+    if (isAtlas) {
+      opts.tls = true;
+      opts.tlsAllowInvalidCertificates = false;
+      opts.tlsAllowInvalidHostnames = false;
+      opts.authSource = 'admin';
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('⚙️ Connection options:', opts);
+    }
 
     cached!.promise = MongoClient.connect(MONGODB_URI!, opts).then((client) => {
-      console.log('✅ MongoDB client connected successfully');
-      console.log('🎯 Connected to:', isAtlas ? 'MongoDB Atlas' : 'Local MongoDB');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ MongoDB client connected successfully');
+        console.log('🎯 Connected to:', isAtlas ? 'MongoDB Atlas' : 'Local MongoDB');
+      }
       return {
         client,
         db: client.db(MONGODB_DB_NAME),

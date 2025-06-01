@@ -29,9 +29,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🚀 Processing PRD...', {
-      prdTextLength: prdText.length
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 Processing PRD...', {
+        prdTextLength: prdText.length
+      });
+    }
 
     // Initialize services
     const prdParser = new PrdParserService();
@@ -66,12 +68,14 @@ export async function POST(request: NextRequest) {
     const globalContextData = contextStackManager.extractGlobalContext(tempProjectDoc);
     const moduleContexts = contextStackManager.extractModuleContexts(tempProjectDoc);
 
-    console.log('🧠 Context extraction results:', {
-      globalContextData: globalContextData ? 'extracted' : 'failed',
-      moduleContextsCount: moduleContexts.length,
-      globalSummary: globalContextData?.summary?.substring(0, 100) + '...',
-      moduleNames: moduleContexts.map(mc => mc.moduleTitle)
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🧠 Context extraction results:', {
+        globalContextData: globalContextData ? 'extracted' : 'failed',
+        moduleContextsCount: moduleContexts.length,
+        globalSummary: globalContextData?.summary?.substring(0, 100) + '...',
+        moduleNames: moduleContexts.map(mc => mc.moduleTitle)
+      });
+    }
 
     // Create project with enhanced context
     const projectId = await projectService.createProjectWithContext(
@@ -112,7 +116,9 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     };
 
-    console.log('✅ PRD processing completed successfully');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ PRD processing completed successfully');
+    }
     return NextResponse.json(response);
 
   } catch (error) {

@@ -4,7 +4,7 @@
  */
 
 import { PrdParserService } from '../prdParser.service';
-import { ParsedSection, TaskNode, ExtractedEntities, PrdProcessingResult } from '@/types';
+import { ParsedSection } from '@/types';
 
 describe('PrdParserService', () => {
   let prdParser: PrdParserService;
@@ -20,7 +20,7 @@ describe('PrdParserService', () => {
     });
 
     it('should return empty array for null input', () => {
-      const result = prdParser.detectSections(null as any);
+      const result = prdParser.detectSections(null as unknown as string);
       expect(result).toEqual([]);
     });
 

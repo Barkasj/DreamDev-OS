@@ -9,9 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "db:init": "ts-node scripts/init-database.ts",
-    "db:health": "node scripts/check-db-health.js"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@types/uuid": "^9.0.8",

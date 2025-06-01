@@ -35,8 +35,8 @@ const mockProjectService = projectService as jest.Mocked<typeof projectService>;
 const mockContextStackManagerService = ContextStackManagerService as jest.MockedClass<typeof ContextStackManagerService>;
 
 describe('/api/prd/process', () => {
-  let mockPrdParser: any;
-  let mockContextManager: any;
+  let mockPrdParser: jest.Mocked<PrdParserService>;
+  let mockContextManager: jest.Mocked<ContextStackManagerService>;
 
   beforeEach(() => {
     jest.clearAllMocks();

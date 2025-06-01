@@ -42,10 +42,12 @@ export async function GET(
       );
     }
 
-    console.log('🎯 Generating prompt for task:', {
-      projectId,
-      taskId
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🎯 Generating prompt for task:', {
+        projectId,
+        taskId
+      });
+    }
 
     // Get project from database
     const project = await projectService.getProjectById(projectId);

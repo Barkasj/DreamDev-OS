@@ -24,8 +24,8 @@ jest.mock('../mongodb.ts', () => ({
 
 describe('ProjectService', () => {
   let projectService: ProjectService;
-  let mockDb: any;
-  let mockCollection: any;
+  let mockDb: jest.Mocked<{ collection: jest.Mock }>;
+  let mockCollection: jest.Mocked<{ insertOne: jest.Mock; findOne: jest.Mock; updateOne: jest.Mock }>;
 
   beforeEach(() => {
     projectService = new ProjectService();
@@ -46,8 +46,8 @@ describe('ProjectService', () => {
     };
 
     // Mock getDatabase to return our mock
-    const { getDatabase } = require('../mongodb.ts');
-    (getDatabase as jest.Mock).mockResolvedValue(mockDb);
+    const mongodb = await import('../mongodb');
+    (mongodb.getDatabase as jest.Mock).mockResolvedValue(mockDb);
   });
 
   afterEach(() => {

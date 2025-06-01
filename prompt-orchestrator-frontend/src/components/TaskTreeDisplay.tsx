@@ -6,8 +6,7 @@
 
 import React, { useState } from 'react';
 import { Users, Settings, Star, Loader2, TreePine, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { TaskTreeDisplayProps, TaskNode } from '@/types';
+import { TaskTreeDisplayProps } from '@/types';
 import TaskNodeItem from './TaskNodeItem';
 
 const TaskTreeDisplay: React.FC<TaskTreeDisplayProps> = ({
@@ -28,8 +27,6 @@ const TaskTreeDisplay: React.FC<TaskTreeDisplayProps> = ({
     }
     setExpandedNodes(newExpanded);
   };
-
-  // Functions removed - icons are handled by TaskNodeItem component and used directly in legend
 
   const handleToggleExpand = (taskId: string) => {
     toggleExpanded(taskId);

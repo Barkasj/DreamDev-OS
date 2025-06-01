@@ -6,7 +6,7 @@ import { Upload, TreePine, FileText, AlertCircle, CheckCircle, Loader2 } from 'l
 import PrdUpload from '@/components/PrdUpload';
 import TaskTreeDisplay from '@/components/TaskTreeDisplay';
 import PromptDisplay from '@/components/PromptDisplay';
-import { AppState, TaskNode, AvailableTask, PromptCompositionResult } from '@/types';
+import { AppState, TaskNode, AvailableTask } from '@/types';
 
 // Interface untuk API responses
 interface PrdProcessResponse {

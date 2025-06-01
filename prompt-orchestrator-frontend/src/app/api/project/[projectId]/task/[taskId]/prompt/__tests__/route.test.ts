@@ -28,7 +28,7 @@ const mockPromptComposerService = PromptComposerService as jest.MockedClass<type
 
 describe('/api/project/[projectId]/task/[taskId]/prompt', () => {
 
-  let mockPromptComposerInstance: any;
+  let mockPromptComposerInstance: jest.Mocked<PromptComposerService>;
 
   beforeEach(() => {
     jest.clearAllMocks();
