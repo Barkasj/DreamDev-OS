@@ -276,7 +276,39 @@ Integrate with external APIs for enhanced functionality. Support webhook notific
       const globalContext = service.extractGlobalContext(project);
 
       if (globalContext!.compressionMetadata!.chunksCount > 3) {
-        expect(['distributed', 'first']).toContain(globalContext!.compressionMetadata!.strategy);
+        expect(['distributed', 'first', 'keyword-based']).toContain(globalContext!.compressionMetadata!.strategy);
+      }
+    });
+
+    it('should use "keyword-based" strategy for very long texts with many chunks', () => {
+      const longText = `
+        # Project Requirements Document
+        
+        ## System Architecture
+        The system architecture includes multiple components for authentication, database management, and API services.
+        
+        ## Implementation Details
+        Implementation involves creating secure authentication modules, scalable database schemas, and robust API endpoints.
+        
+        ## Security Requirements
+        Security requirements include authentication protocols, authorization mechanisms, and data encryption standards.
+        
+        ## Performance Optimization
+        Performance optimization focuses on database query optimization, API response times, and system scalability.
+        
+        ## Testing Strategy
+        Testing strategy encompasses unit testing, integration testing, and performance testing methodologies.
+        
+        ## Deployment Configuration
+        Deployment configuration includes containerization, orchestration, and monitoring system setup.
+      `.repeat(20); // Create very long text to trigger keyword-based strategy
+      
+      const project = createMockProject(longText);
+      const globalContext = service.extractGlobalContext(project);
+
+      // Should use keyword-based strategy for very long texts
+      if (globalContext!.compressionMetadata!.chunksCount > 8) {
+        expect(globalContext!.compressionMetadata!.strategy).toBe('keyword-based');
       }
     });
   });
