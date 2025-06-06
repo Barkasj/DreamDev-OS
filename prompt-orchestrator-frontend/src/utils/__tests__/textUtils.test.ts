@@ -202,6 +202,54 @@ describe('textUtils', () => {
       expect(estimateTokenCount('abc')).toBe(1); // 3 chars should round up to 1 token
       expect(estimateTokenCount('abcde')).toBe(2); // 5 chars should round up to 2 tokens
     });
+
+    // Added tests based on subtask requirements
+    it('should handle Indonesian words (consistency check, length-based)', () => {
+      // Formula: Math.ceil(length / 4)
+      expect(estimateTokenCount('halo dunia')).toBe(Math.ceil(10 / 4)); // "halo dunia" is 10 chars -> 3 tokens
+      expect(estimateTokenCount('selamat pagi')).toBe(Math.ceil(12 / 4)); // "selamat pagi" is 12 chars -> 3 tokens
+    });
+
+    it('should handle text with punctuation', () => {
+      expect(estimateTokenCount('hello, world!')).toBe(Math.ceil(13 / 4)); // 13 chars -> 4 tokens
+      expect(estimateTokenCount('test... test??')).toBe(Math.ceil(14 / 4)); // 14 chars -> 4 tokens
+    });
+
+    it('should handle text with multiple spaces and newlines', () => {
+      expect(estimateTokenCount('hello   world')).toBe(Math.ceil(13 / 4)); // 13 chars -> 4 tokens
+      expect(estimateTokenCount('hello\nworld')).toBe(Math.ceil(11 / 4)); // 11 chars -> 3 tokens
+      expect(estimateTokenCount('hello\n\nworld')).toBe(Math.ceil(12 / 4)); // 12 chars -> 3 tokens
+    });
+
+    it('should handle text with numbers', () => {
+      expect(estimateTokenCount('12345')).toBe(Math.ceil(5 / 4)); // 5 chars -> 2 tokens
+      expect(estimateTokenCount('version 2.0')).toBe(Math.ceil(11 / 4)); // 11 chars -> 3 tokens
+    });
+
+    it('should handle mixed alphanumeric and special characters', () => {
+      expect(estimateTokenCount('user@example.com#test!')).toBe(Math.ceil(22 / 4)); // 22 chars -> 6 tokens
+    });
+
+    it('should handle string of only spaces', () => {
+      expect(estimateTokenCount('    ')).toBe(Math.ceil(4 / 4)); // 4 spaces -> 1 token
+      expect(estimateTokenCount(' ')).toBe(Math.ceil(1 / 4)); // 1 space -> 1 token
+    });
+
+    it('should handle string of only punctuation', () => {
+      expect(estimateTokenCount('.,?!')).toBe(Math.ceil(4 / 4)); // 4 chars -> 1 token
+      expect(estimateTokenCount('---')).toBe(Math.ceil(3 / 4)); // 3 chars -> 1 token
+    });
+
+    it('should handle very long string without spaces', () => {
+      const longString = 'a'.repeat(1000);
+      expect(estimateTokenCount(longString)).toBe(Math.ceil(1000 / 4)); // 250 tokens
+    });
+
+    it('should handle strings with emojis (length based)', () => {
+      // Note: JavaScript string length for emojis can vary. '😊'.length is 2.
+      expect(estimateTokenCount('hello 😊 world')).toBe(Math.ceil('hello 😊 world'.length / 4));
+      // 'hello 😊 world' = h e l l o <space> UD83D UDE0A <space> w o r l d = 5 + 1 + 2 + 1 + 5 = 14 chars -> 4 tokens
+    });
   });
 
   describe('calculateChunksTokenCount', () => {
