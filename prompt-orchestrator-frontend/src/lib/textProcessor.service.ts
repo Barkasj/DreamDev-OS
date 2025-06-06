@@ -228,25 +228,58 @@ export class TextProcessorService {
     const potentialKeywords = new Set<string>();
     if (!text) return [];
 
-    // Simpler regex for initial capitalized word capture
-    const capitalizedWords = text.match(/\b[A-Z][a-zA-Z_]*\b/g) || [];
-    // commonWords should only contain general words, not domain-like words such as Project/System
-    const commonWords = ['The', 'This', 'That', 'An', 'A', 'With', 'From', 'When', 'Where', 'And', 'For', 'Into', 'Is', 'Are', 'Was', 'Were', 'It'];
+    let textWithoutQuoted = text;
+
+    // 1. Extract and add quoted terms first
+    const quotedTerms = text.match(/"([^"]+)"/g) || [];
+    quotedTerms.forEach(quotedTermWithQuotes => {
+      const term = quotedTermWithQuotes.replace(/"/g, '').trim();
+      if (term.length > 2 && term.length < 50) {
+        potentialKeywords.add(term);
+      }
+      // Replace the processed quoted term in the original text to avoid re-processing its content
+      textWithoutQuoted = textWithoutQuoted.replace(quotedTermWithQuotes, '');
+    });
+
+    // 2. Process capitalized words from text where quoted terms have been removed
+    // Regex: Prioritize multi-word/hyphenated Title Case, then PascalCase
+    const capitalizedWords = textWithoutQuoted.match(/\b(?:[A-Z][a-z]+(?:[\s-][A-Z][a-z]+)+|[A-Z][a-zA-Z_]+)\b/g) || [];
+    const commonStartingWords = ['The', 'This', 'That', 'An', 'A', 'With', 'From', 'When', 'Where', 'And', 'For', 'Into', 'Is', 'Are', 'Was', 'Were', 'It'];
 
     capitalizedWords
       .map(word => word.trim())
-      .forEach(word => {
-        // Filter out common words and check length
-        if (word.length > 3 && word.length < 30 && !commonWords.includes(word)) {
-          potentialKeywords.add(word);
+      .forEach(originalWord => {
+        let termToProcess = originalWord;
+        const parts = originalWord.split(' ');
+
+        // If it's a multi-word term and starts with a common word, take the rest
+        if (parts.length > 1 && commonStartingWords.includes(parts[0])) {
+          termToProcess = parts.slice(1).join(' ');
+        }
+
+        // If, after removing common starting word, the term is empty (e.g., original was just "The"), skip.
+        if (!termToProcess) {
+          return;
+        }
+
+        // Now, check the termToProcess.
+        // It must meet length criteria.
+        // If it's a single word now (e.g. "UserManagement", or "Project" from "This Project"), it must not be a commonStartingWord itself.
+        if (termToProcess.length > 3 && termToProcess.length < 30) {
+          const termParts = termToProcess.split(' ');
+          if (termParts.length === 1 && commonStartingWords.includes(termToProcess)) {
+            // e.g. if originalWord was "The" and it was the only word, termToProcess is "The", commonStartingWords includes it, so skip.
+            return;
+          }
+          potentialKeywords.add(termToProcess);
         }
       });
-    const quotedTerms = text.match(/"([^"]+)"/g) || [];
-
-    quotedTerms
-      .map(term => term.replace(/"/g, '').trim())
-      .filter(term => term.length > 2 && term.length < 50)
-      .forEach(term => potentialKeywords.add(term));
+    // The following block for quotedTerms is redundant because it's handled at the beginning of the function now.
+    // const quotedTerms = text.match(/"([^"]+)"/g) || [];
+    // quotedTerms
+    //   .map(term => term.replace(/"/g, '').trim())
+    //   .filter(term => term.length > 2 && term.length < 50)
+    //   .forEach(term => potentialKeywords.add(term));
 
     // Convert to array, unique (already handled by Set), then slice.
     // The previous slice was inside forEach, which is not what we want.

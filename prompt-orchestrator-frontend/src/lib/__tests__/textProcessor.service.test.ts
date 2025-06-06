@@ -303,6 +303,68 @@ describe('TextProcessorService', () => {
         const keywords = service.extractDomainKeywords(text);
         expect(keywords.length).toBeLessThanOrEqual(10);
     });
+
+    it('should extract various PascalCase terms', () => {
+      const text = 'This involves ImportantSystemComponent, AnotherTerm, and also DatabaseBackupManager.';
+      const keywords = service.extractDomainKeywords(text);
+      expect(keywords).toContain('ImportantSystemComponent');
+      expect(keywords).toContain('AnotherTerm');
+      expect(keywords).toContain('DatabaseBackupManager');
+    });
+
+    it('should extract multi-word Title Case terms, handling common leading words', () => {
+      const text = 'This is a Final User Report and also a System Alert from The Mainframe Interface.';
+      const keywords = service.extractDomainKeywords(text);
+      expect(keywords).toContain('Final User Report');
+      expect(keywords).toContain('System Alert');
+      expect(keywords).toContain('Mainframe Interface'); // "The" should be stripped
+      expect(keywords).not.toContain('This');
+      expect(keywords).not.toContain('The');
+    });
+
+    it('should extract hyphenated Title Case terms', () => {
+      const text = 'Consider the Self-Service-Portal and the Knowledge-Base. Also, First-Class-Object.';
+      const keywords = service.extractDomainKeywords(text);
+      expect(keywords).toContain('Self-Service-Portal');
+      expect(keywords).toContain('Knowledge-Base');
+      expect(keywords).toContain('First-Class-Object');
+    });
+
+    it('should handle a complex mix of keyword types', () => {
+      const text = `
+        The primary component is the UserAuthenticationService.
+        It uses "JSON Web Tokens" for security.
+        Also, consider the Admin-Dashboard and the overall SystemHealth.
+        A FinalReport is generated. This is an End-User-Manual.
+        "LegacySystem" needs to be phased out.
+        AnotherPascalCase.
+      `;
+      const keywords = service.extractDomainKeywords(text);
+      expect(keywords).toContain('UserAuthenticationService');
+      expect(keywords).toContain('JSON Web Tokens');
+      expect(keywords).toContain('Admin-Dashboard');
+      expect(keywords).toContain('SystemHealth');
+      expect(keywords).toContain('FinalReport'); // "A" should be stripped if it was "A FinalReport" as a single match
+      expect(keywords).toContain('End-User-Manual');
+      expect(keywords).toContain('LegacySystem');
+      expect(keywords).toContain('AnotherPascalCase');
+      expect(keywords).not.toContain('The');
+      expect(keywords).not.toContain('This');
+      // Depending on regex, "A FinalReport" might be "FinalReport" directly or "A" then "FinalReport".
+      // The current regex `\b(?:[A-Z][a-zA-Z_]+|[A-Z][a-z]+(?:[\s-][A-Z][a-z]+)+)\b/g`
+      // would match "A" and "FinalReport" separately if "A" is capitalized.
+      // If "A FinalReport" is matched as one, "A" would be stripped.
+      // The test string has "A FinalReport", so "FinalReport" is expected.
+    });
+
+    it('should correctly handle terms that are substrings of commonStartingWords but valid', () => {
+      const text = 'There is an Issue with the Form. And another one: FormatDocument.';
+      const keywords = service.extractDomainKeywords(text);
+      expect(keywords).toContain('Issue'); // "Is" is a common word, but "Issue" is not.
+      expect(keywords).toContain('Form');   // "For" is a common word, but "Form" is not.
+      expect(keywords).toContain('FormatDocument');
+      expect(keywords).not.toContain('And');
+    });
   });
 
   describe('generateModuleDetailedContent', () => {
